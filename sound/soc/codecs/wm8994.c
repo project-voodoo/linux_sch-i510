@@ -51,6 +51,10 @@
 #define TTY_DIR_NAME "sound_tty"	
 #endif //FEATURE_TTY
 
+#ifdef CONFIG_SND_VOODOO
+#include "wm8994_voodoo.h"
+#endif
+
 //#define WM8994_VERSION "0.1"
 #define SUBJECT "wm8994.c"
 
@@ -237,6 +241,10 @@ int wm8994_write(struct snd_soc_codec *codec, unsigned int reg, unsigned int val
 	u8 data[4];
 	int ret;
 	//BUG_ON(reg > WM8993_MAX_REGISTER);
+
+#ifdef CONFIG_SND_VOODOO
+	value = voodoo_hook_wm8994_write(codec, reg, value);
+#endif
 
 	/* data is
 	 *   D15..D9 WM8993 register offset
@@ -2441,6 +2449,10 @@ static int wm8994_pcm_probe(struct platform_device *pdev)
 #endif        
 #else
                 /* Add other interfaces here */
+#endif
+
+#ifdef CONFIG_SND_VOODOO
+	voodoo_hook_wm8994_pcm_probe(codec);
 #endif
 
         return ret;
