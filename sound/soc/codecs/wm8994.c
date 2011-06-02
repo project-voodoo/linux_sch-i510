@@ -2300,6 +2300,11 @@ static int wm8994_i2c_probe(struct i2c_client *i2c,
 	ret = wm8994_init(wm8994_priv);
 	if (ret < 0)
 		dev_err(&i2c->dev, "failed to initialize WM8994\n");
+
+#ifdef CONFIG_SND_VOODOO
+	voodoo_hook_wm8994_pcm_probe(codec);
+#endif
+
 	return ret;
 }
 
@@ -2449,10 +2454,6 @@ static int wm8994_pcm_probe(struct platform_device *pdev)
 #endif        
 #else
                 /* Add other interfaces here */
-#endif
-
-#ifdef CONFIG_SND_VOODOO
-	voodoo_hook_wm8994_pcm_probe(codec);
 #endif
 
         return ret;
